@@ -55,10 +55,27 @@ public class Larp {
                 continue;
             }
 
-            Task task = new Task(input);
+            Task task;
+            if (input.startsWith("todo ")) {
+                String description = input.substring(5);
+                task = new Todo(description);
+            } else if (input.startsWith("deadline ")) {
+                String[] deadlineParts = input.substring(9).split(" /by ", 2);
+                task = new Deadline(deadlineParts[0], deadlineParts[1]);
+            } else if (input.startsWith("event ")) {
+                String[] eventParts = input.substring(6).split(" /from ", 2);
+                String[] timeParts = eventParts[1].split(" /to ", 2);
+                task = new Event(eventParts[0], timeParts[0], timeParts[1]);
+            } else {
+                task = new Task(input);
+            }
+
             tasks[taskCount] = task;
             taskCount++;
-            System.out.println("Added: " + task);
+            System.out.println("Got it. I've added this task:");
+            System.out.println("  " + task);
+            String taskNoun = taskCount == 1 ? "task" : "tasks";
+            System.out.println("Now you have " + taskCount + " " + taskNoun + " in the list.");
         }
     }
 }
