@@ -60,6 +60,22 @@ public class Larp {
                     continue;
                 }
 
+                if (input.equals("delete") || input.startsWith("delete ")) {
+                    int taskIndex = parseTaskIndex(input, "delete", taskCount);
+                    Task deletedTask = tasks[taskIndex];
+                    for (int i = taskIndex; i < taskCount - 1; i++) {
+                        tasks[i] = tasks[i + 1];
+                    }
+                    tasks[taskCount - 1] = null;
+                    taskCount--;
+
+                    System.out.println("Noted. I've removed this task:");
+                    System.out.println("  " + deletedTask);
+                    String taskNoun = taskCount == 1 ? "task" : "tasks";
+                    System.out.println("Now you have " + taskCount + " " + taskNoun + " in the list.");
+                    continue;
+                }
+
                 Task task = parseTask(input);
                 if (taskCount == tasks.length) {
                     throw new LarpException("Your task list is full.");
