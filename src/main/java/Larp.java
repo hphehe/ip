@@ -1,9 +1,11 @@
+import java.util.Scanner;
+
 /**
- * Starts the Larp chatbot and displays its greeting and farewell messages.
+ * Starts the Larp chatbot and echoes user input until the user exits.
  */
 public class Larp {
     /**
-     * Runs the initial Level 0 interaction.
+     * Runs the interactive chatbot session.
      *
      * @param args command-line arguments; they are not used
      */
@@ -17,6 +19,15 @@ public class Larp {
         System.out.println(banner);
         System.out.println("Hello! I'm Larp.");
         System.out.println("What can I do for you?");
-        System.out.println("Bye. Hope to see you again soon!");
+
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNextLine()) {
+            String input = scanner.nextLine();
+            if (input.equals("bye")) {
+                System.out.println("Bye. Hope to see you again soon!");
+                break;
+            }
+            System.out.println(input);
+        }
     }
 }
