@@ -4,11 +4,6 @@ import java.util.Scanner;
  * Starts the Larp chatbot and manages an in-memory task list.
  */
 public class Larp {
-    /**
-     * Runs the interactive chatbot session.
-     *
-     * @param args command-line arguments; they are not used
-     */
     public static void main(String[] args) {
         String banner = " _        _    ____  ____\n"
                 + "| |      / \\  |  _ \\|  _ \\\n"
@@ -21,7 +16,7 @@ public class Larp {
         System.out.println("What can I do for you?");
 
         Scanner scanner = new Scanner(System.in);
-        String[] tasks = new String[100];
+        Task[] tasks = new Task[100];
         int taskCount = 0;
 
         while (scanner.hasNextLine()) {
@@ -39,14 +34,31 @@ public class Larp {
 
                 System.out.println("Here are the tasks in your list:");
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println((i + 1) + ". " + tasks[i]);
+                    System.out.println((i + 1) + "." + tasks[i]);
                 }
                 continue;
             }
 
-            tasks[taskCount] = input;
+            if (input.startsWith("mark ")) {
+                int taskIndex = Integer.parseInt(input.substring(5)) - 1;
+                tasks[taskIndex].markAsDone();
+                System.out.println("Nice! I've marked this task as done:");
+                System.out.println("  " + tasks[taskIndex]);
+                continue;
+            }
+
+            if (input.startsWith("unmark ")) {
+                int taskIndex = Integer.parseInt(input.substring(7)) - 1;
+                tasks[taskIndex].markAsNotDone();
+                System.out.println("OK, I've marked this task as not done yet:");
+                System.out.println("  " + tasks[taskIndex]);
+                continue;
+            }
+
+            Task task = new Task(input);
+            tasks[taskCount] = task;
             taskCount++;
-            System.out.println("Added: " + input);
+            System.out.println("Added: " + task);
         }
     }
 }
