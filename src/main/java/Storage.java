@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,19 +95,24 @@ public class Storage {
         }
 
         return switch (fields[0]) {
-        case "T" -> {
-            requireFieldCount(fields, 3, lineNumber);
-            yield new Todo(fields[2], isDone);
-        }
-        case "D" -> {
-            requireFieldCount(fields, 4, lineNumber);
-            yield new Deadline(fields[2], fields[3], isDone);
-        }
-        case "E" -> {
-            requireFieldCount(fields, 5, lineNumber);
-            yield new Event(fields[2], fields[3], fields[4], isDone);
-        }
-        default -> throw invalidDataError(lineNumber);
+            case "T" -> {
+                requireFieldCount(fields, 3, lineNumber);
+                yield new Todo(fields[2], isDone);
+            }
+            case "D" -> {
+                requireFieldCount(fields, 4, lineNumber);
+                try {
+                    LocalDate by = LocalDate.parse(fields[3]);
+                    yield new Deadline(fields[2], by, isDone);
+                } catch (DateTimeParseException e) {
+                    throw invalidDataError(lineNumber);
+                }
+            }
+            case "E" -> {
+                requireFieldCount(fields, 5, lineNumber);
+                yield new Event(fields[2], fields[3], fields[4], isDone);
+            }
+            default -> throw invalidDataError(lineNumber);
         };
     }
 
@@ -116,7 +123,7 @@ public class Storage {
         }
         if (task instanceof Deadline deadline) {
             return String.join(FIELD_SEPARATOR, "D", status,
-                    task.getDescription(), deadline.getBy());
+                    task.getDescription(), deadline.getBy().toString());
         }
         if (task instanceof Event event) {
             return String.join(FIELD_SEPARATOR, "E", status,
