@@ -17,6 +17,11 @@ public class Storage {
 
     private final Path filePath;
 
+    /**
+     * Creates a storage manager for the specified data file.
+     *
+     * @param filePath Path of the task data file.
+     */
     public Storage(String filePath) {
         this.filePath = Path.of(filePath);
     }
@@ -66,6 +71,11 @@ public class Storage {
         }
     }
 
+    /**
+     * Creates the data file and its parent directories when they do not exist.
+     *
+     * @throws LarpException If the data file cannot be created.
+     */
     private void createDataFileIfMissing() throws LarpException {
         try {
             Path parentDirectory = this.filePath.getParent();
@@ -80,6 +90,14 @@ public class Storage {
         }
     }
 
+    /**
+     * Reconstructs a task from one line of saved data.
+     *
+     * @param line Saved task data.
+     * @param lineNumber One-based line number used in error messages.
+     * @return Task represented by the saved data.
+     * @throws LarpException If the saved data is invalid.
+     */
     private Task parseTask(String line, int lineNumber) throws LarpException {
         String[] fields = line.split(" \\| ", -1);
         if (fields.length < 3) {
@@ -117,6 +135,13 @@ public class Storage {
         };
     }
 
+    /**
+     * Converts a task into its persistent text representation.
+     *
+     * @param task Task to convert.
+     * @return Line of text suitable for saving.
+     * @throws LarpException If the task type is unsupported.
+     */
     private String formatTask(Task task) throws LarpException {
         String status = task.isDone() ? "1" : "0";
         if (task instanceof Todo) {
@@ -133,6 +158,14 @@ public class Storage {
         throw new LarpException("I could not save an unknown task type.");
     }
 
+    /**
+     * Verifies that saved task data contains the expected number of fields.
+     *
+     * @param fields Saved task fields.
+     * @param expectedCount Required number of fields.
+     * @param lineNumber One-based line number used in error messages.
+     * @throws LarpException If the field count is incorrect.
+     */
     private void requireFieldCount(String[] fields, int expectedCount, int lineNumber)
             throws LarpException {
         if (fields.length != expectedCount) {
@@ -140,6 +173,12 @@ public class Storage {
         }
     }
 
+    /**
+     * Creates a consistent error for invalid saved data.
+     *
+     * @param lineNumber One-based number of the invalid line.
+     * @return Exception describing the invalid line.
+     */
     private LarpException invalidDataError(int lineNumber) {
         return new LarpException("The task data is invalid at line " + lineNumber + ".");
     }
