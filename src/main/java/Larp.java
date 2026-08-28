@@ -1,8 +1,10 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
 /**
- * Starts the Larp chatbot and manages an in-memory task list.
+ * Starts the Larp chatbot and coordinates command processing and task persistence.
  */
 public class Larp {
     public static void main(String[] args) {
@@ -145,14 +147,19 @@ public class Larp {
         }
 
         if (input.equals("deadline")) {
-            throw new LarpException("Use: deadline DESCRIPTION /by TIME.");
+            throw new LarpException("Use: deadline DESCRIPTION /by yyyy-MM-dd.");
         }
         if (input.startsWith("deadline ")) {
             String[] parts = input.substring(9).split(" /by ", -1);
             if (parts.length != 2 || parts[0].isBlank() || parts[1].isBlank()) {
-                throw new LarpException("Use: deadline DESCRIPTION /by TIME.");
+                throw new LarpException("Use: deadline DESCRIPTION /by yyyy-MM-dd.");
             }
-            return new Deadline(parts[0].trim(), parts[1].trim());
+            try {
+                LocalDate by = LocalDate.parse(parts[1].trim());
+                return new Deadline(parts[0].trim(), by);
+            } catch (DateTimeParseException e) {
+                throw new LarpException("Use a valid deadline date in yyyy-MM-dd format.");
+            }
         }
 
         if (input.equals("event")) {
