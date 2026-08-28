@@ -37,6 +37,9 @@ public class Larp {
         }
     }
 
+    /**
+     * Loads saved tasks, falling back to an empty task list if loading fails.
+     */
     private void loadTasks() {
         try {
             this.tasks = new TaskList(this.storage.load());
@@ -46,6 +49,13 @@ public class Larp {
         }
     }
 
+    /**
+     * Executes one user command and reports its result through the user interface.
+     *
+     * @param input User command to execute.
+     * @return {@code true} if the command exits Larp, or {@code false} otherwise.
+     * @throws LarpException If the command or its arguments are invalid.
+     */
     private boolean executeCommand(String input) throws LarpException {
         if (input.isEmpty()) {
             throw new LarpException("Please enter a command.");
