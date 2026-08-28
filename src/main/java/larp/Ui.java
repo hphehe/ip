@@ -67,6 +67,25 @@ public class Ui {
         }
 
         System.out.println("Here are the tasks in your list:");
+        showNumberedTasks(tasks);
+    }
+
+    /**
+     * Displays tasks that match a find command.
+     *
+     * @param tasks Matching tasks to display.
+     */
+    public void showMatchingTasks(TaskList tasks) {
+        if (tasks.isEmpty()) {
+            System.out.println("No matching tasks found.");
+            return;
+        }
+
+        System.out.println("Here are the matching tasks in your list:");
+        showNumberedTasks(tasks);
+    }
+
+    private void showNumberedTasks(TaskList tasks) {
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println((i + 1) + "." + tasks.get(i));
         }

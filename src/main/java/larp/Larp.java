@@ -71,6 +71,13 @@ public class Larp {
             return false;
         }
 
+        if (input.equals("find") || input.startsWith("find ")) {
+            String keyword = Parser.parseFindKeyword(input);
+            TaskList matchingTasks = this.tasks.find(keyword);
+            this.ui.showMatchingTasks(matchingTasks);
+            return false;
+        }
+
         if (input.equals("mark") || input.startsWith("mark ")) {
             int taskIndex = Parser.parseTaskIndex(input, "mark", this.tasks.size());
             Task task = this.tasks.markAsDone(taskIndex);

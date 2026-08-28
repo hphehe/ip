@@ -11,6 +11,21 @@ public class Parser {
     }
 
     /**
+     * Returns the keyword specified by a find command.
+     *
+     * @param input Full user input.
+     * @return Keyword to search for.
+     * @throws LarpException If the keyword is missing.
+     */
+    public static String parseFindKeyword(String input) throws LarpException {
+        String keyword = input.substring("find".length()).trim();
+        if (keyword.isEmpty()) {
+            throw new LarpException("Please provide a keyword after 'find'.");
+        }
+        return keyword;
+    }
+
+    /**
      * Returns the zero-based task index specified by a command.
      *
      * @param input Full user input.
