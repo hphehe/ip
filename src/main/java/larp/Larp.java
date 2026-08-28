@@ -1,3 +1,5 @@
+package larp;
+
 /**
  * Coordinates the Larp chatbot's user interface, task list, parser, and storage.
  */
