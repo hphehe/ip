@@ -46,16 +46,15 @@ public class Storage {
     /**
      * Replaces the data file contents with the current task list.
      *
-     * @param tasks array containing the tasks
-     * @param taskCount number of active entries in the array
+     * @param tasks task list to save
      * @throws LarpException if the data cannot be written
      */
-    public void save(Task[] tasks, int taskCount) throws LarpException {
+    public void save(TaskList tasks) throws LarpException {
         createDataFileIfMissing();
 
         List<String> lines = new ArrayList<>();
-        for (int i = 0; i < taskCount; i++) {
-            lines.add(formatTask(tasks[i]));
+        for (Task task : tasks.getTasks()) {
+            lines.add(formatTask(task));
         }
 
         try {
