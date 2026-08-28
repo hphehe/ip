@@ -1,3 +1,5 @@
+package larp;
+
 /**
  * Represents an error caused by an invalid command given to Larp.
  */

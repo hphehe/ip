@@ -1,3 +1,5 @@
+package larp;
+
 import java.util.Scanner;
 
 /**
