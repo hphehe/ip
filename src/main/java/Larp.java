@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -18,6 +19,20 @@ public class Larp {
         Scanner scanner = new Scanner(System.in);
         Task[] tasks = new Task[100];
         int taskCount = 0;
+        Storage storage = new Storage("data/larp.txt");
+
+        try {
+            List<Task> savedTasks = storage.load();
+            if (savedTasks.size() > tasks.length) {
+                throw new LarpException("The saved task list has more than 100 tasks.");
+            }
+            for (Task task : savedTasks) {
+                tasks[taskCount] = task;
+                taskCount++;
+            }
+        } catch (LarpException e) {
+            System.out.println("OOPS!!! " + e.getMessage());
+        }
 
         while (scanner.hasNextLine()) {
             String input = scanner.nextLine().trim();
@@ -47,6 +62,7 @@ public class Larp {
                 if (input.equals("mark") || input.startsWith("mark ")) {
                     int taskIndex = parseTaskIndex(input, "mark", taskCount);
                     tasks[taskIndex].markAsDone();
+                    storage.save(tasks, taskCount);
                     System.out.println("Nice! I've marked this task as done:");
                     System.out.println("  " + tasks[taskIndex]);
                     continue;
@@ -55,6 +71,7 @@ public class Larp {
                 if (input.equals("unmark") || input.startsWith("unmark ")) {
                     int taskIndex = parseTaskIndex(input, "unmark", taskCount);
                     tasks[taskIndex].markAsNotDone();
+                    storage.save(tasks, taskCount);
                     System.out.println("OK, I've marked this task as not done yet:");
                     System.out.println("  " + tasks[taskIndex]);
                     continue;
@@ -68,6 +85,7 @@ public class Larp {
                     }
                     tasks[taskCount - 1] = null;
                     taskCount--;
+                    storage.save(tasks, taskCount);
 
                     System.out.println("Noted. I've removed this task:");
                     System.out.println("  " + deletedTask);
@@ -83,6 +101,7 @@ public class Larp {
 
                 tasks[taskCount] = task;
                 taskCount++;
+                storage.save(tasks, taskCount);
                 System.out.println("Got it. I've added this task:");
                 System.out.println("  " + task);
                 String taskNoun = taskCount == 1 ? "task" : "tasks";

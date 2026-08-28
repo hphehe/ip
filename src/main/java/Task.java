@@ -6,8 +6,18 @@ public class Task {
     private boolean isDone;
 
     public Task(String description) {
+        this(description, false);
+    }
+
+    /**
+     * Creates a task with its saved completion state.
+     *
+     * @param description description of the task
+     * @param isDone whether the task has been completed
+     */
+    public Task(String description, boolean isDone) {
         this.description = description;
-        this.isDone = false;
+        this.isDone = isDone;
     }
 
     public void markAsDone() {
@@ -20,6 +30,14 @@ public class Task {
 
     public String getStatusIcon() {
         return this.isDone ? "X" : " ";
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public boolean isDone() {
+        return this.isDone;
     }
 
     @Override
