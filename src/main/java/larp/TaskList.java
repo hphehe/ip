@@ -9,6 +9,9 @@ import java.util.List;
 public class TaskList {
     private final List<Task> tasks;
 
+    /**
+     * Creates an empty task list.
+     */
     public TaskList() {
         this.tasks = new ArrayList<>();
     }
@@ -22,32 +25,71 @@ public class TaskList {
         this.tasks = new ArrayList<>(tasks);
     }
 
+    /**
+     * Returns whether this task list contains no tasks.
+     *
+     * @return {@code true} if the list is empty, or {@code false} otherwise.
+     */
     public boolean isEmpty() {
         return this.tasks.isEmpty();
     }
 
+    /**
+     * Returns the number of tasks in this list.
+     *
+     * @return Number of tasks.
+     */
     public int size() {
         return this.tasks.size();
     }
 
+    /**
+     * Returns the task at the specified zero-based index.
+     *
+     * @param index Zero-based task index.
+     * @return Task at the specified index.
+     */
     public Task get(int index) {
         return this.tasks.get(index);
     }
 
+    /**
+     * Adds a task to the end of this list.
+     *
+     * @param task Task to add.
+     */
     public void add(Task task) {
         this.tasks.add(task);
     }
 
+    /**
+     * Removes and returns the task at the specified zero-based index.
+     *
+     * @param index Zero-based task index.
+     * @return Removed task.
+     */
     public Task delete(int index) {
         return this.tasks.remove(index);
     }
 
+    /**
+     * Marks the selected task as completed.
+     *
+     * @param index Zero-based task index.
+     * @return Updated task.
+     */
     public Task markAsDone(int index) {
         Task task = get(index);
         task.markAsDone();
         return task;
     }
 
+    /**
+     * Marks the selected task as incomplete.
+     *
+     * @param index Zero-based task index.
+     * @return Updated task.
+     */
     public Task markAsNotDone(int index) {
         Task task = get(index);
         task.markAsNotDone();

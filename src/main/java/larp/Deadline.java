@@ -35,6 +35,11 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    /**
+     * Returns the date by which this task should be completed.
+     *
+     * @return Deadline date.
+     */
     public LocalDate getBy() {
         return this.by;
     }
