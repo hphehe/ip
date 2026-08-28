@@ -38,6 +38,22 @@ public class TaskList {
         this.tasks.add(task);
     }
 
+    /**
+     * Returns tasks whose descriptions contain the specified keyword.
+     *
+     * @param keyword Keyword to search for.
+     * @return New task list containing matching tasks in their original order.
+     */
+    public TaskList find(String keyword) {
+        List<Task> matchingTasks = new ArrayList<>();
+        for (Task task : this.tasks) {
+            if (task.getDescription().contains(keyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        return new TaskList(matchingTasks);
+    }
+
     public Task delete(int index) {
         return this.tasks.remove(index);
     }

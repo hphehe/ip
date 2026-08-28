@@ -14,6 +14,18 @@ import org.junit.jupiter.api.Test;
  */
 public class ParserTest {
     @Test
+    public void parseFindKeyword_validKeyword_returnsKeyword() throws LarpException {
+        assertEquals("read book", Parser.parseFindKeyword("find read book"));
+        assertEquals("book", Parser.parseFindKeyword("find   book   "));
+    }
+
+    @Test
+    public void parseFindKeyword_missingKeyword_throwsLarpException() {
+        assertThrows(LarpException.class, () -> Parser.parseFindKeyword("find"));
+        assertThrows(LarpException.class, () -> Parser.parseFindKeyword("find   "));
+    }
+
+    @Test
     public void parseTask_todoCommand_returnsTodo() throws LarpException {
         Task task = Parser.parseTask("todo read book");
 
