@@ -19,8 +19,8 @@ public class Task {
     /**
      * Creates a task with its saved completion state.
      *
-     * @param description description of the task
-     * @param isDone whether the task has been completed
+     * @param description Description of the task.
+     * @param isDone Whether the task has been completed.
      */
     public Task(String description, boolean isDone) {
         this.description = description;

@@ -29,8 +29,8 @@ public class Storage {
     /**
      * Loads all saved tasks, creating an empty data file when none exists.
      *
-     * @return tasks stored in the data file
-     * @throws LarpException if the file cannot be read or contains invalid data
+     * @return Tasks stored in the data file.
+     * @throws LarpException If the file cannot be read or contains invalid data.
      */
     public List<Task> load() throws LarpException {
         createDataFileIfMissing();
@@ -53,8 +53,8 @@ public class Storage {
     /**
      * Replaces the data file contents with the current task list.
      *
-     * @param tasks task list to save
-     * @throws LarpException if the data cannot be written
+     * @param tasks Task list to save.
+     * @throws LarpException If the data cannot be written.
      */
     public void save(TaskList tasks) throws LarpException {
         createDataFileIfMissing();

@@ -16,8 +16,8 @@ public class Todo extends Task {
     /**
      * Creates a todo with its saved completion state.
      *
-     * @param description description of the todo
-     * @param isDone whether the todo has been completed
+     * @param description Description of the todo.
+     * @param isDone Whether the todo has been completed.
      */
     public Todo(String description, boolean isDone) {
         super(description, isDone);

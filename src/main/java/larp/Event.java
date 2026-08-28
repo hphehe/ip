@@ -21,10 +21,10 @@ public class Event extends Task {
     /**
      * Creates an event with its saved completion state.
      *
-     * @param description description of the event
-     * @param from start time of the event
-     * @param to end time of the event
-     * @param isDone whether the event has been completed
+     * @param description Description of the event.
+     * @param from Start time of the event.
+     * @param to End time of the event.
+     * @param isDone Whether the event has been completed.
      */
     public Event(String description, String from, String to, boolean isDone) {
         super(description, isDone);
