@@ -6,6 +6,7 @@ package larp;
 public class Larp {
     private final Storage storage;
     private final Ui ui;
+    private final String loadErrorMessage;
     private TaskList tasks;
 
     /**
@@ -17,6 +18,7 @@ public class Larp {
         this.storage = new Storage(filePath);
         this.ui = new Ui();
         this.tasks = new TaskList();
+        this.loadErrorMessage = loadTasks();
     }
 
     /**
@@ -24,28 +26,68 @@ public class Larp {
      */
     public void run() {
         this.ui.showWelcome();
-        loadTasks();
+        if (this.loadErrorMessage != null) {
+            this.ui.showMessage(this.loadErrorMessage);
+        }
 
         boolean isExit = false;
         while (!isExit && this.ui.hasNextCommand()) {
             String input = this.ui.readCommand();
-            try {
-                isExit = executeCommand(input);
-            } catch (LarpException e) {
-                this.ui.showError(e.getMessage());
-            }
+            this.ui.showMessage(getResponse(input));
+            isExit = isExitCommand(input);
         }
     }
 
     /**
-     * Loads saved tasks, falling back to an empty task list if loading fails.
+     * Returns the greeting shown when the graphical interface starts.
+     *
+     * @return Greeting and any storage warning encountered during startup.
      */
-    private void loadTasks() {
+    public String getWelcomeMessage() {
+        String welcomeMessage = "Hello! I'm Larp.\nWhat can I do for you?";
+        if (this.loadErrorMessage == null) {
+            return welcomeMessage;
+        }
+        return welcomeMessage + "\n\n" + this.loadErrorMessage;
+    }
+
+    /**
+     * Processes one command and returns the response for a graphical interface.
+     *
+     * @param input User command to process.
+     * @return Response that should be displayed to the user.
+     */
+    public String getResponse(String input) {
+        String trimmedInput = input.trim();
+        try {
+            return executeCommand(trimmedInput);
+        } catch (LarpException e) {
+            return this.ui.getErrorMessage(e.getMessage());
+        }
+    }
+
+    /**
+     * Returns whether the supplied command asks Larp to exit.
+     *
+     * @param input User command to inspect.
+     * @return {@code true} when the command is exactly {@code bye}.
+     */
+    public boolean isExitCommand(String input) {
+        return input.trim().equals("bye");
+    }
+
+    /**
+     * Loads saved tasks, falling back to an empty task list if loading fails.
+     *
+     * @return Error message for the user, or {@code null} when loading succeeds.
+     */
+    private String loadTasks() {
         try {
             this.tasks = new TaskList(this.storage.load());
+            return null;
         } catch (LarpException e) {
-            this.ui.showError(e.getMessage());
             this.tasks = new TaskList();
+            return this.ui.getErrorMessage(e.getMessage());
         }
     }
 
@@ -53,60 +95,53 @@ public class Larp {
      * Executes one user command and reports its result through the user interface.
      *
      * @param input User command to execute.
-     * @return {@code true} if the command exits Larp, or {@code false} otherwise.
+     * @return Response describing the result of the command.
      * @throws LarpException If the command or its arguments are invalid.
      */
-    private boolean executeCommand(String input) throws LarpException {
+    private String executeCommand(String input) throws LarpException {
         if (input.isEmpty()) {
             throw new LarpException("Please enter a command.");
         }
 
         if (input.equals("bye")) {
-            this.ui.showGoodbye();
-            return true;
+            return this.ui.getGoodbyeMessage();
         }
 
         if (input.equals("list")) {
-            this.ui.showTaskList(this.tasks);
-            return false;
+            return this.ui.getTaskListMessage(this.tasks);
         }
 
         if (input.equals("find") || input.startsWith("find ")) {
             String keyword = Parser.parseFindKeyword(input);
             TaskList matchingTasks = this.tasks.find(keyword);
-            this.ui.showMatchingTasks(matchingTasks);
-            return false;
+            return this.ui.getMatchingTasksMessage(matchingTasks);
         }
 
         if (input.equals("mark") || input.startsWith("mark ")) {
             int taskIndex = Parser.parseTaskIndex(input, "mark", this.tasks.size());
             Task task = this.tasks.markAsDone(taskIndex);
             this.storage.save(this.tasks);
-            this.ui.showMarkedTask(task);
-            return false;
+            return this.ui.getMarkedTaskMessage(task);
         }
 
         if (input.equals("unmark") || input.startsWith("unmark ")) {
             int taskIndex = Parser.parseTaskIndex(input, "unmark", this.tasks.size());
             Task task = this.tasks.markAsNotDone(taskIndex);
             this.storage.save(this.tasks);
-            this.ui.showUnmarkedTask(task);
-            return false;
+            return this.ui.getUnmarkedTaskMessage(task);
         }
 
         if (input.equals("delete") || input.startsWith("delete ")) {
             int taskIndex = Parser.parseTaskIndex(input, "delete", this.tasks.size());
             Task deletedTask = this.tasks.delete(taskIndex);
             this.storage.save(this.tasks);
-            this.ui.showDeletedTask(deletedTask, this.tasks.size());
-            return false;
+            return this.ui.getDeletedTaskMessage(deletedTask, this.tasks.size());
         }
 
         Task task = Parser.parseTask(input);
         this.tasks.add(task);
         this.storage.save(this.tasks);
-        this.ui.showAddedTask(task, this.tasks.size());
-        return false;
+        return this.ui.getAddedTaskMessage(task, this.tasks.size());
     }
 
     /**
