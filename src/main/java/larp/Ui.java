@@ -31,6 +31,15 @@ public class Ui {
     }
 
     /**
+     * Displays one complete response.
+     *
+     * @param message Response to display.
+     */
+    public void showMessage(String message) {
+        System.out.println(message);
+    }
+
+    /**
      * Returns whether another command is available from standard input.
      *
      * @return {@code true} if another command can be read, or {@code false} otherwise.
@@ -49,99 +58,105 @@ public class Ui {
     }
 
     /**
-     * Displays the farewell message.
+     * Returns the farewell message.
+     *
+     * @return Farewell message.
      */
-    public void showGoodbye() {
-        System.out.println("Bye. Hope to see you again soon!");
+    public String getGoodbyeMessage() {
+        return "Bye. Hope to see you again soon!";
     }
 
     /**
-     * Displays every task with a one-based list number.
+     * Formats every task with a one-based list number.
      *
-     * @param tasks Tasks to display.
+     * @param tasks Tasks to include.
+     * @return Message containing every task.
      */
-    public void showTaskList(TaskList tasks) {
+    public String getTaskListMessage(TaskList tasks) {
         if (tasks.isEmpty()) {
-            System.out.println("Your task list is empty.");
-            return;
+            return "Your task list is empty.";
         }
 
-        System.out.println("Here are the tasks in your list:");
-        showNumberedTasks(tasks);
+        return "Here are the tasks in your list:\n" + getNumberedTasks(tasks);
     }
 
     /**
-     * Displays tasks that match a find command.
+     * Formats tasks that match a find command.
      *
-     * @param tasks Matching tasks to display.
+     * @param tasks Matching tasks to include.
+     * @return Message containing the matching tasks.
      */
-    public void showMatchingTasks(TaskList tasks) {
+    public String getMatchingTasksMessage(TaskList tasks) {
         if (tasks.isEmpty()) {
-            System.out.println("No matching tasks found.");
-            return;
+            return "No matching tasks found.";
         }
 
-        System.out.println("Here are the matching tasks in your list:");
-        showNumberedTasks(tasks);
+        return "Here are the matching tasks in your list:\n" + getNumberedTasks(tasks);
     }
 
-    private void showNumberedTasks(TaskList tasks) {
+    private String getNumberedTasks(TaskList tasks) {
+        StringBuilder numberedTasks = new StringBuilder();
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + "." + tasks.get(i));
+            if (i > 0) {
+                numberedTasks.append(System.lineSeparator());
+            }
+            numberedTasks.append(i + 1).append('.').append(tasks.get(i));
         }
+        return numberedTasks.toString();
     }
 
     /**
-     * Displays confirmation that a task was marked as completed.
+     * Formats confirmation that a task was marked as completed.
      *
      * @param task Updated task.
+     * @return Confirmation message.
      */
-    public void showMarkedTask(Task task) {
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println("  " + task);
+    public String getMarkedTaskMessage(Task task) {
+        return "Nice! I've marked this task as done:\n  " + task;
     }
 
     /**
-     * Displays confirmation that a task was marked as incomplete.
+     * Formats confirmation that a task was marked as incomplete.
      *
      * @param task Updated task.
+     * @return Confirmation message.
      */
-    public void showUnmarkedTask(Task task) {
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  " + task);
+    public String getUnmarkedTaskMessage(Task task) {
+        return "OK, I've marked this task as not done yet:\n  " + task;
     }
 
     /**
-     * Displays a removed task and the remaining task count.
+     * Formats a removed task and the remaining task count.
      *
      * @param task Removed task.
      * @param taskCount Number of tasks remaining.
+     * @return Confirmation message.
      */
-    public void showDeletedTask(Task task, int taskCount) {
-        System.out.println("Noted. I've removed this task:");
-        System.out.println("  " + task);
-        System.out.println("Now you have " + taskCount + " " + getTaskNoun(taskCount) + " in the list.");
+    public String getDeletedTaskMessage(Task task, int taskCount) {
+        return "Noted. I've removed this task:\n  " + task
+                + "\nNow you have " + taskCount + " " + getTaskNoun(taskCount) + " in the list.";
     }
 
     /**
-     * Displays an added task and the updated task count.
+     * Formats an added task and the updated task count.
      *
      * @param task Added task.
      * @param taskCount Updated number of tasks.
+     * @return Confirmation message.
      */
-    public void showAddedTask(Task task, int taskCount) {
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + task);
-        System.out.println("Now you have " + taskCount + " " + getTaskNoun(taskCount) + " in the list.");
+    public String getAddedTaskMessage(Task task, int taskCount) {
+        return "Got it. I've added this task:\n  " + task
+                + "\nNow you have " + taskCount + " " + getTaskNoun(taskCount) + " in the list.";
     }
 
     /**
-     * Displays an error message to the user.
+     * Formats an error message for the user.
      *
      * @param message Explanation of the error.
+     * @return Formatted error message.
      */
-    public void showError(String message) {
-        System.out.println("OOPS!!! " + message);
+    public String getErrorMessage(String message) {
+        return "OOPS!!! " + message;
     }
 
     private String getTaskNoun(int taskCount) {
