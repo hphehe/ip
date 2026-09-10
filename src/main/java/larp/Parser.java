@@ -7,6 +7,14 @@ import java.time.format.DateTimeParseException;
  * Interprets user input and converts it into task data.
  */
 public class Parser {
+    private static final String FIND_COMMAND = "find";
+    private static final String TODO_COMMAND = "todo";
+    private static final String DEADLINE_COMMAND = "deadline";
+    private static final String EVENT_COMMAND = "event";
+    private static final String DEADLINE_SEPARATOR = " /by ";
+    private static final String EVENT_START_SEPARATOR = " /from ";
+    private static final String EVENT_END_SEPARATOR = " /to ";
+
     private Parser() {
     }
 
@@ -18,7 +26,7 @@ public class Parser {
      * @throws LarpException If the keyword is missing.
      */
     public static String parseFindKeyword(String input) throws LarpException {
-        String keyword = input.substring("find".length()).trim();
+        String keyword = getArguments(input, FIND_COMMAND);
         if (keyword.isEmpty()) {
             throw new LarpException("Please provide a keyword after 'find'.");
         }
@@ -62,49 +70,79 @@ public class Parser {
      * @throws LarpException If the command or its arguments are invalid.
      */
     public static Task parseTask(String input) throws LarpException {
-        if (input.equals("todo")) {
-            throw new LarpException("The description of a todo cannot be empty.");
+        if (isCommand(input, TODO_COMMAND)) {
+            return parseTodo(input);
         }
-        if (input.startsWith("todo ")) {
-            String description = input.substring(5).trim();
-            if (description.isEmpty()) {
-                throw new LarpException("The description of a todo cannot be empty.");
-            }
-            return new Todo(description);
+        if (isCommand(input, DEADLINE_COMMAND)) {
+            return parseDeadline(input);
         }
-
-        if (input.equals("deadline")) {
-            throw new LarpException("Use: deadline DESCRIPTION /by yyyy-MM-dd.");
-        }
-        if (input.startsWith("deadline ")) {
-            String[] parts = input.substring(9).split(" /by ", -1);
-            if (parts.length != 2 || parts[0].isBlank() || parts[1].isBlank()) {
-                throw new LarpException("Use: deadline DESCRIPTION /by yyyy-MM-dd.");
-            }
-            try {
-                LocalDate by = LocalDate.parse(parts[1].trim());
-                return new Deadline(parts[0].trim(), by);
-            } catch (DateTimeParseException e) {
-                throw new LarpException("Use a valid deadline date in yyyy-MM-dd format.");
-            }
-        }
-
-        if (input.equals("event")) {
-            throw new LarpException("Use: event DESCRIPTION /from START /to END.");
-        }
-        if (input.startsWith("event ")) {
-            String[] eventParts = input.substring(6).split(" /from ", -1);
-            if (eventParts.length != 2 || eventParts[0].isBlank()) {
-                throw new LarpException("Use: event DESCRIPTION /from START /to END.");
-            }
-
-            String[] timeParts = eventParts[1].split(" /to ", -1);
-            if (timeParts.length != 2 || timeParts[0].isBlank() || timeParts[1].isBlank()) {
-                throw new LarpException("Use: event DESCRIPTION /from START /to END.");
-            }
-            return new Event(eventParts[0].trim(), timeParts[0].trim(), timeParts[1].trim());
+        if (isCommand(input, EVENT_COMMAND)) {
+            return parseEvent(input);
         }
 
         throw new LarpException("I don't recognize that command.");
+    }
+
+    /**
+     * Creates a todo from a validated todo command prefix.
+     *
+     * @param input Full user input.
+     * @return Todo described by the command.
+     * @throws LarpException If the description is missing.
+     */
+    private static Todo parseTodo(String input) throws LarpException {
+        String description = getArguments(input, TODO_COMMAND);
+        if (description.isEmpty()) {
+            throw new LarpException("The description of a todo cannot be empty.");
+        }
+        return new Todo(description);
+    }
+
+    /**
+     * Creates a deadline from a validated deadline command prefix.
+     *
+     * @param input Full user input.
+     * @return Deadline described by the command.
+     * @throws LarpException If the description or date is invalid.
+     */
+    private static Deadline parseDeadline(String input) throws LarpException {
+        String[] parts = getArguments(input, DEADLINE_COMMAND).split(DEADLINE_SEPARATOR, -1);
+        if (parts.length != 2 || parts[0].isBlank() || parts[1].isBlank()) {
+            throw new LarpException("Use: deadline DESCRIPTION /by yyyy-MM-dd.");
+        }
+        try {
+            LocalDate by = LocalDate.parse(parts[1].trim());
+            return new Deadline(parts[0].trim(), by);
+        } catch (DateTimeParseException e) {
+            throw new LarpException("Use a valid deadline date in yyyy-MM-dd format.");
+        }
+    }
+
+    /**
+     * Creates an event from a validated event command prefix.
+     *
+     * @param input Full user input.
+     * @return Event described by the command.
+     * @throws LarpException If its description or time range is invalid.
+     */
+    private static Event parseEvent(String input) throws LarpException {
+        String[] eventParts = getArguments(input, EVENT_COMMAND).split(EVENT_START_SEPARATOR, -1);
+        if (eventParts.length != 2 || eventParts[0].isBlank()) {
+            throw new LarpException("Use: event DESCRIPTION /from START /to END.");
+        }
+
+        String[] timeParts = eventParts[1].split(EVENT_END_SEPARATOR, -1);
+        if (timeParts.length != 2 || timeParts[0].isBlank() || timeParts[1].isBlank()) {
+            throw new LarpException("Use: event DESCRIPTION /from START /to END.");
+        }
+        return new Event(eventParts[0].trim(), timeParts[0].trim(), timeParts[1].trim());
+    }
+
+    private static boolean isCommand(String input, String command) {
+        return input.equals(command) || input.startsWith(command + " ");
+    }
+
+    private static String getArguments(String input, String command) {
+        return input.substring(command.length()).trim();
     }
 }
