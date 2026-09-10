@@ -20,9 +20,16 @@ Example: `keyword (optional arguments)`
 expected output
 ```
 
-## Feature ABC
+## Finding tasks
 
-// Feature details
+Use `find KEYWORD` to list tasks whose descriptions contain the keyword. Matching
+is case-insensitive, so `find book` also finds a task named `Read Book`.
+
+For example:
+
+```text
+find BOOK
+```
 
 
 ## Feature XYZ

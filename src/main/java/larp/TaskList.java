@@ -2,6 +2,7 @@ package larp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Manages the collection of tasks tracked by Larp.
@@ -66,14 +67,17 @@ public class TaskList {
     }
 
     /**
-     * Returns tasks whose descriptions contain the specified keyword.
+     * Returns tasks whose descriptions contain the specified keyword, ignoring case.
      *
      * @param keyword Keyword to search for.
      * @return New task list containing matching tasks in their original order.
      */
     public TaskList find(String keyword) {
+        String normalizedKeyword = keyword.toLowerCase(Locale.ROOT);
         List<Task> matchingTasks = this.tasks.stream()
-                .filter(task -> task.getDescription().contains(keyword))
+                .filter(task -> task.getDescription()
+                        .toLowerCase(Locale.ROOT)
+                        .contains(normalizedKeyword))
                 .toList();
         return new TaskList(matchingTasks);
     }
