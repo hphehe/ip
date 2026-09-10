@@ -1,6 +1,7 @@
 package larp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -35,5 +36,19 @@ public class TaskListTest {
         TaskList matchingTasks = tasks.find("exercise");
 
         assertTrue(matchingTasks.isEmpty());
+    }
+
+    @Test
+    public void get_invalidIndex_throwsAssertionError() {
+        TaskList tasks = new TaskList(List.of(new Todo("read book")));
+
+        assertThrows(AssertionError.class, () -> tasks.get(1));
+    }
+
+    @Test
+    public void add_nullTask_throwsAssertionError() {
+        TaskList tasks = new TaskList();
+
+        assertThrows(AssertionError.class, () -> tasks.add(null));
     }
 }

@@ -22,6 +22,7 @@ public class TaskList {
      * @param tasks Initial tasks to place in the list.
      */
     public TaskList(List<Task> tasks) {
+        assert tasks != null : "Initial task list must not be null";
         this.tasks = new ArrayList<>(tasks);
     }
 
@@ -50,6 +51,7 @@ public class TaskList {
      * @return Task at the specified index.
      */
     public Task get(int index) {
+        assert isValidIndex(index) : "Task index must be within the task list";
         return this.tasks.get(index);
     }
 
@@ -59,6 +61,7 @@ public class TaskList {
      * @param task Task to add.
      */
     public void add(Task task) {
+        assert task != null : "Task to add must not be null";
         this.tasks.add(task);
     }
 
@@ -82,6 +85,7 @@ public class TaskList {
      * @return Removed task.
      */
     public Task delete(int index) {
+        assert isValidIndex(index) : "Task index must be within the task list";
         return this.tasks.remove(index);
     }
 
@@ -116,5 +120,9 @@ public class TaskList {
      */
     public List<Task> getTasks() {
         return List.copyOf(this.tasks);
+    }
+
+    private boolean isValidIndex(int index) {
+        return index >= 0 && index < this.tasks.size();
     }
 }
