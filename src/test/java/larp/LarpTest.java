@@ -32,6 +32,17 @@ class LarpTest {
     }
 
     @Test
+    void getResponse_findWithDifferentCase_returnsMatchingTask() {
+        Larp larp = new Larp(temporaryDirectory.resolve("tasks.txt").toString());
+        larp.getResponse("todo Read Book");
+
+        String findResponse = larp.getResponse("find BOOK");
+
+        assertEquals("Here are the matching tasks in your list:\n1.[T][ ] Read Book",
+                findResponse);
+    }
+
+    @Test
     void isExitCommand_onlyExactByeCommand_returnsTrue() {
         Larp larp = new Larp(temporaryDirectory.resolve("tasks.txt").toString());
 

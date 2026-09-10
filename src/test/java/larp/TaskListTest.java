@@ -27,6 +27,18 @@ public class TaskListTest {
     }
 
     @Test
+    public void find_keywordWithDifferentCase_returnsMatchingTasks() {
+        TaskList tasks = new TaskList(List.of(
+                new Todo("Read Book"),
+                new Todo("submit report")));
+
+        TaskList matchingTasks = tasks.find("BOOK");
+
+        assertEquals(1, matchingTasks.size());
+        assertEquals("Read Book", matchingTasks.get(0).getDescription());
+    }
+
+    @Test
     public void find_noMatchingKeyword_returnsEmptyTaskList() {
         TaskList tasks = new TaskList(List.of(
                 new Todo("read book"),
